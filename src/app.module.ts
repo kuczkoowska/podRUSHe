@@ -8,6 +8,8 @@ import { User } from './module/users/user.entity';
 import { UsersModule } from './module/users/users.module';
 import { AuthModule } from './module/auth/auth.module';
 import * as dotenv from 'dotenv';
+import { Package } from './module/packages/package.entity';
+import { PackagesModule } from './module/packages/packages.module';
 dotenv.config();
 
 @Module({
@@ -19,7 +21,7 @@ dotenv.config();
       username: 'jagoda',
       password: 'jagoda',
       database: 'podrushe',
-      entities: [User],
+      entities: [User, Package],
       synchronize: true,
     }),
     JwtModule.register({
@@ -28,6 +30,7 @@ dotenv.config();
     }),
     UsersModule,
     AuthModule,
+    PackagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
