@@ -33,4 +33,35 @@ export class PackagesService {
   async remove(id: number): Promise<void> {
     await this.packagesRepository.delete(id);
   }
+
+  async findAllWithFilters(filters: any): Promise<Package[]> {
+    const queryBuilder = this.packagesRepository.createQueryBuilder('package');
+    
+    if (filters.destination) {
+      queryBuilder.andWhere('LOWER(package.destination) LIKE LOWER(:destination)', 
+        { destination: `%${filters.destination}%` });
+    }
+    
+    if (filters.minPrice) {
+      queryBuilder.andWhere('package.price >= :minPrice', 
+        { minPrice: parseFloat(filters.minPrice) });
+    }
+  
+    if (filters.maxPrice) {
+      queryBuilder.andWhere('package.price <= :maxPrice', 
+        { maxPrice: parseFloat(filters.maxPrice) });
+    }
+      
+    if (filters.startDate) {
+      queryBuilder.andWhere('package.startDate >= :startDate', 
+        { startDate: filters.startDate });
+    }
+  
+    if (filters.endDate) {
+      queryBuilder.andWhere('package.endDate <= :endDate', 
+        { endDate: filters.endDate });
+    }
+          
+    return queryBuilder.getMany();
+  }
 }

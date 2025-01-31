@@ -30,8 +30,8 @@ export class Package {
   imageUrl: string;
 
   @Column("simple-array", { nullable: true })
-  included: string[]; // Flights, Hotel, Breakfast
+  included: string[];
 
   @Column("simple-array", { nullable: true })
-  excluded: string[]; // Lunch
+  excluded: string[];
 }
