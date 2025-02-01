@@ -7,6 +7,13 @@ import * as dotenv from 'dotenv';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Add CORS configuration
+  app.enableCors({
+    origin: 'http://localhost:5173', // Your React app URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('API podRUSHe')
     .setDescription('The podRUSHe API description')
