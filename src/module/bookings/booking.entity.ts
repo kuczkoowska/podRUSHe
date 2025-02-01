@@ -7,7 +7,7 @@ export class Booking {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.bookings, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
 

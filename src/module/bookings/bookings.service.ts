@@ -54,7 +54,7 @@ export class BookingsService {
   }
 
   async getBookings(userId: number): Promise<Booking[]> {
-    return this.bookingsRepository.find({ where: { user: { id: userId } } });
+    return this.bookingsRepository.find({ where: { user: { id: userId } }, relations: ['package'], select: ['id', 'bookingDate', 'numberOfTravelers', 'totalPrice', 'package'] });
   }
 
 

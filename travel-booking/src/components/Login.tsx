@@ -15,6 +15,8 @@ export default function Login() {
       const response = await login({ username, password });
       localStorage.setItem("token", response.data.token);
       alert('Login successful! Welcome back!');
+      localStorage.setItem('userId', response.data.user.id);
+      console.log('User ID saved in local storage:', localStorage.getItem('userId'));
       navigate("/packages");
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Login failed! Please check your credentials.';

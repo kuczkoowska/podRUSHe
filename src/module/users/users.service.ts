@@ -32,10 +32,12 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async update(id: number, user: User): Promise<User> {
-    await this.usersRepository.update(id, user);
+  async update(id: number, updateUserDto: Partial<RegisterDto>): Promise<User> {
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+    await this.usersRepository.update(id, updateUserDto);
     return this.usersRepository.findOne({ where: { id } });
-
   }
 
   async remove(id: number): Promise<void> {
@@ -48,5 +50,9 @@ export class UsersService {
       select: ['id', 'username', 'password', 'email', 'firstName', 'lastName'],
     });
   }
-
+  
+  async findOneById(id: number): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
 }
+

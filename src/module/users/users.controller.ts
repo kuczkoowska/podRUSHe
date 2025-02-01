@@ -20,8 +20,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<User | null> {
-    const user = await this.usersService.findOne(id);
+  async findOneById(@Param('id') id: number): Promise<User | null> {
+    const user = await this.usersService.findOneById(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -39,7 +39,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.remove(+id);
+  remove(@Param('id') id: number): Promise<void> {
+    return this.usersService.remove(id);
   }
 }
