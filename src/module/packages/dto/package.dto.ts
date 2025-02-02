@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsDate, IsOptional, IsArray } from 'class-validator';
+import { IsString, IsNumber, IsDate, IsOptional, IsArray, Max, MaxLength } from 'class-validator';
 
 export class PackageDto {
   @ApiProperty()
@@ -8,14 +8,17 @@ export class PackageDto {
 
   @ApiProperty()
   @IsString()
+  @MaxLength(50)
   title: string;
 
   @ApiProperty()
   @IsString()
+  @MaxLength(200) 
   description: string;
 
   @ApiProperty()
   @IsString()
+  @MaxLength(100)
   destination: string;
 
   @ApiProperty()
@@ -24,6 +27,7 @@ export class PackageDto {
 
   @ApiProperty()
   @IsString()
+  @MaxLength(50)
   duration: string;
 
   @ApiProperty()
