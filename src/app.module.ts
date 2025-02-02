@@ -14,6 +14,8 @@ import { Booking } from './module/bookings/booking.entity';
 import { BookingsModule } from './module/bookings/bookings.module';
 import { Comment } from './module/comments/comment.entity';
 import { CommentsModule } from './module/comments/comments.module';
+import { ChatMessage } from './module/chat/chat.entity';
+import { ChatModule } from './module/chat/chat.module';
 
 dotenv.config();
 
@@ -26,7 +28,7 @@ dotenv.config();
       username: 'jagoda',
       password: 'jagoda',
       database: 'podrushe',
-      entities: [User, Package, Booking, Comment],
+      entities: [User, Package, Booking, Comment, ChatMessage],
       synchronize: true,
     }),
     JwtModule.register({
@@ -38,6 +40,7 @@ dotenv.config();
     AuthModule,
     PackagesModule,
     BookingsModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

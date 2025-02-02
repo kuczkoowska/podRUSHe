@@ -1,6 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Booking } from '../bookings/booking.entity';
 import { Comment } from '../comments/comment.entity';
+import { ChatMessage } from '../chat/chat.entity';
+
 
 @Entity()
 export class User {
@@ -30,4 +32,10 @@ export class User {
 
   @Column({ default: 'user' })
   role: string;
+
+  @OneToMany(() => ChatMessage, (message) => message.sender)
+  sentMessages: ChatMessage[];
+
+  @OneToMany(() => ChatMessage, (message) => message.receiver)
+  receivedMessages: ChatMessage[];
 }
