@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Comment } from '../comments/comment.entity';
 
 @Entity()
 export class Package {
@@ -34,4 +35,7 @@ export class Package {
 
   @Column("simple-array", { nullable: true })
   excluded: string[];
+  
+  @OneToMany(() => Comment, (comment) => comment.package)
+  comments: Comment[];
 }

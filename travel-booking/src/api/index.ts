@@ -53,3 +53,15 @@ export const getPackages = () =>
 export const getPackageById = (id: number) =>
   api.get(`/packages/${id}`);
 
+export const addComment = (data: { packageId: number; content: string }) =>
+  api.post("/comments", data, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+
+export const getComments = (packageId: number) =>
+  api.get(`/comments/${packageId}`);
+
+export const deleteComment = (commentId: number) =>
+  api.delete(`/comments/${commentId}`, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
