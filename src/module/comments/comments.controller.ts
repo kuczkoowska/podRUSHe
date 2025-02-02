@@ -1,6 +1,8 @@
 import { Controller, Post, Get, Delete, Body, Param, Request, UseGuards, UnauthorizedException } from "@nestjs/common";
 import { CommentsService } from "./comments.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { RolesGuard } from "../auth/roles.guard";
+import { Roles } from "../auth/roles.decorator";
 
 @Controller("comments")
 export class CommentsController {
@@ -18,12 +20,10 @@ export class CommentsController {
     return this.commentsService.getCommentsForPackage(packageId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Delete(":id")
-  deleteComment(@Request() req, @Param("id") commentId: number) {
-    if (req.user.role !== "admin") {
-        throw new UnauthorizedException("Only admins can delete comments");
-      }
-      return this.commentsService.deleteComment(commentId, req.user.role === "admin");
-    }
+  deleteComment(@Param("id") commentId: number) {
+    return this.commentsService.deleteComment(commentId);
+  }
 }

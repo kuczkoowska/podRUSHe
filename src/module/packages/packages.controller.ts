@@ -1,14 +1,20 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
 import { PackagesService } from './packages.service';
 import { Package } from './package.entity';
+import { PackageDto } from './dto/package.dto';
+import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('packages')
 export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Post()
-  create(@Body() packageData: Partial<Package>): Promise<Package> {
-    return this.packagesService.create(packageData);
+  createPackage(@Body() packageDto: PackageDto) {
+    return this.packagesService.create(packageDto);
   }
 
   @Get(':id')

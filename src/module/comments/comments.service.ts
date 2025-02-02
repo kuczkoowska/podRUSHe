@@ -30,8 +30,7 @@ export class CommentsService {
     return this.commentRepository.find({ where: { package: { id: packageId } }, relations: ["user"] });
   }
 
-  async deleteComment(commentId: number, isAdmin: boolean) {
-    if (!isAdmin) throw new Error("Only admins can delete comments");
+  async deleteComment(commentId: number) {
     return this.commentRepository.delete(commentId);
   }
 }
