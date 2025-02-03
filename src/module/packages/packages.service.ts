@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Package } from './package.entity';
+import { FilterPackageDto } from './dto/filter-package.dto';
 
 @Injectable()
 export class PackagesService {
@@ -12,7 +13,12 @@ export class PackagesService {
 
   async create(packageData: Partial<Package>): Promise<Package> {
     const newPackage = this.packagesRepository.create(packageData);
-    return this.packagesRepository.save(newPackage);
+    return this.packagesRepository.save({
+      ...packageData,
+      startDate: new Date(`${packageData.startDate}T00:00:00.000Z`), // Append time to make it a valid Date
+      endDate: new Date(`${packageData.endDate}T00:00:00.000Z`), 
+    });
+
   }
 
   async findAll(): Promise<Package[]> {
@@ -27,14 +33,14 @@ export class PackagesService {
 
   async update(id: number, packageData: Partial<Package>): Promise<Package> {
     await this.packagesRepository.update(id, packageData);
-    return this.findOne(id);
+    return this.packagesRepository.findOne({ where: { id } });
   }
-
+  
   async remove(id: number): Promise<void> {
     await this.packagesRepository.delete(id);
   }
 
-  async findAllWithFilters(filters: any): Promise<Package[]> {
+  async findAllWithFilters(filters: FilterPackageDto): Promise<Package[]> {
     const queryBuilder = this.packagesRepository.createQueryBuilder('package');
     
     if (filters.destination) {

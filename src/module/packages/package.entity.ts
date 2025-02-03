@@ -18,9 +18,6 @@ export class Package {
   @Column('decimal')
   price: number;
 
-  @Column()
-  duration: string;
-
   @Column({ type: 'date' })
   startDate: Date;
 

@@ -22,16 +22,9 @@ export class PackageDto {
   price: number;
 
   @ApiProperty()
-  @IsString()
-  @MaxLength(50)
-  duration: string;
-
-  @ApiProperty()
-  @IsDate()
   startDate: Date;
 
   @ApiProperty()
-  @IsDate()
   endDate: Date;
 
   @ApiProperty({ required: false })
