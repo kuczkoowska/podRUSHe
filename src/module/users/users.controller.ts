@@ -1,45 +1,59 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, NotFoundException, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, NotFoundException, UseGuards, Request, Patch, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './user.entity';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Show user profile' })
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
-
-  @Get()
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  async findOneById(@Param('id') id: number): Promise<User | null> {
-    const user = await this.usersService.findOneById(id);
+  async getProfile(@Request() req: { user: { id: number } }) {
+    const user = await this.usersService.findOne(req.user.id);
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException('User not found');
     }
-    return user;
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      username: user.username,
+    };
+  }
+  
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Patch()
+  @ApiOperation({ summary: 'Update user profile' })
+  async updateUser(
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() req
+  ) {
+    return this.usersService.update(+req.user.userId, updateUserDto);
   }
 
-  @Post()
-  create(@Body() user: User): Promise<User> {
-    return this.usersService.create(user);
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete user profile' })
+  @Delete()
+  async remove(@Request() req: { user: { userId: number } }): Promise<void> {
+      try {
+          console.log('DELETE route hit!');
+          console.log('Request User:', req.user);
+
+          if (!req.user || !req.user.userId) {
+              throw new UnauthorizedException('Invalid user credentials');
+          }
+
+          await this.usersService.remove(+req.user.userId);
+          console.log('User deleted successfully');
+      } catch (error) {
+          console.error('Error in DELETE /users:', error);
+          throw error;
+      }
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() user: User): Promise<User> {
-    return this.usersService.update(+id, user);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.usersService.remove(id);
-  }
 }

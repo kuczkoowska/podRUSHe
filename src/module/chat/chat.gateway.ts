@@ -8,7 +8,7 @@ import {
   import { Server, Socket } from 'socket.io';
   import { ChatService } from './chat.service';
   import { UseGuards } from '@nestjs/common';
-  import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+  import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
   
   @WebSocketGateway({ cors: true })
   export class ChatGateway {

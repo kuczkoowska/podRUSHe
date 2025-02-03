@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { BookingsService } from "./bookings.service";
 import { Booking } from "./booking.entity";
+import { ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiBearerAuth()
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}

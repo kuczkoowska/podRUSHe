@@ -17,6 +17,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('API podRUSHe')
     .setDescription('The podRUSHe API description')
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
 

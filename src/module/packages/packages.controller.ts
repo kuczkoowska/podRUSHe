@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } fro
 import { PackagesService } from './packages.service';
 import { Package } from './package.entity';
 import { PackageDto } from './dto/package.dto';
-import { Roles } from '../auth/roles.decorator';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('packages')
 export class PackagesController {
