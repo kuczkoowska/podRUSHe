@@ -27,7 +27,10 @@ export class CommentsService {
   }
 
   async getCommentsForPackage(packageId: number) {
-    return this.commentRepository.find({ where: { package: { id: packageId } }, relations: ["user"] });
+    return this.commentRepository.find({
+      where: { package: { id: packageId } },
+      relations: ["user", "package"]
+    });
   }
 
   async deleteComment(commentId: number) {

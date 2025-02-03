@@ -5,7 +5,7 @@ import { Package } from "../packages/package.entity";
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()
-  id: number;
+  commentId: number;
 
   @Column("text")
   content: string;
