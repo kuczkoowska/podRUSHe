@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,16 +31,26 @@ export class UsersService {
 }
 
   async remove(id: number): Promise<void> {
-    console.log('Removing user with ID:', id);
+      console.log('Removing user with ID:', id);
 
-    const result = await this.usersRepository.delete(id);
-    
-    if (result.affected === 0) {
-        throw new NotFoundException('User not found');
+      const user = await this.usersRepository.findOne({
+        where: { id },
+        relations: ['comments']
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+      await this.usersRepository.manager.transaction(async (transactionalEntityManager) => {
+        if (user.comments) {
+          await transactionalEntityManager.delete('comment', { user: { id } });
+        }
+        await transactionalEntityManager.delete('user', { id });
+      });
+      
+
+      console.log('User deleted successfully');
     }
-    
-    console.log('User deleted successfully');
-  }
 
   async findOne(id: number): Promise<User | undefined> {
     return this.usersRepository.findOne({

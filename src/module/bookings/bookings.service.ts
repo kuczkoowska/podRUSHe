@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Booking } from "./booking.entity";
 import { Repository } from "typeorm";
@@ -26,7 +26,8 @@ export class BookingsService {
     const existingBooking = await this.bookingsRepository.findOne({
         where: { user: { id: userId }, package: { id: packageId } }
       });
-    
+    const totalPrice = packageItem.price * numberOfTravelers;
+
     if (existingBooking) {
     throw new BadRequestException('You already booked this package. Modify your existing booking instead.');
     }
@@ -43,12 +44,13 @@ export class BookingsService {
       throw new BadRequestException('Number of travelers must be at least 1');
     }
   
-    const booking = new Booking();
-    booking.user = user;
-    booking.package = packageItem;
-    booking.bookingDate = new Date();
-    booking.numberOfTravelers = numberOfTravelers;
-    booking.totalPrice = packageItem.price * numberOfTravelers;
+    const booking = this.bookingsRepository.create({
+      user,
+      package: packageItem,
+      bookingDate: new Date(),
+      totalPrice,
+      numberOfTravelers,
+    });
   
     return this.bookingsRepository.save(booking);
   }
@@ -58,8 +60,21 @@ export class BookingsService {
   }
 
 
-  async cancelBooking(id: number): Promise<void> {
-    return this.bookingsRepository.delete(id).then(() => undefined);
+  async cancelBooking(id: number, userId?: number): Promise<void> {
+    const booking = await this.bookingsRepository.findOne({
+      where: { id },
+      relations: ['user']
+    });
+  
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+  
+    if (userId && booking.user.id !== userId) {
+      throw new UnauthorizedException('You can only cancel your own bookings');
+    }
+  
+    await this.bookingsRepository.delete(id);
   }
   
   async updateBooking(id: number, updates: { numberOfTravelers?: number; bookingDate?: Date }): Promise<Booking> {
@@ -69,7 +84,7 @@ export class BookingsService {
       throw new NotFoundException('Booking not found');
     }
 
-    if (new Date(booking.bookingDate) < new Date()) {
+    if (new Date(booking.package.startDate) < new Date()) {
       throw new BadRequestException('Cannot modify a past booking');
     }
 

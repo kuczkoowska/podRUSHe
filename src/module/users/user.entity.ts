@@ -27,15 +27,15 @@ export class User {
   @OneToMany(() => Booking, (booking) => booking.user, { cascade: true })
   bookings: Booking[];
   
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, { cascade: true })
   comments: Comment[];
 
   @Column({ default: 'user' })
   role: string;
 
-  @OneToMany(() => ChatMessage, (message) => message.sender)
+  @OneToMany(() => ChatMessage, (message) => message.sender, { cascade: true })
   sentMessages: ChatMessage[];
 
-  @OneToMany(() => ChatMessage, (message) => message.receiver)
+  @OneToMany(() => ChatMessage, (message) => message.receiver, { cascade: true })
   receivedMessages: ChatMessage[];
 }

@@ -13,8 +13,9 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Show user profile' })
   @Get('profile')
-  async getProfile(@Request() req: { user: { id: number } }) {
-    const user = await this.usersService.findOne(req.user.id);
+  async getProfile(@Request() req: { user: { userId: number } }) {
+    console.log(req.user.userId);
+    const user = await this.usersService.findOne(req.user.userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
