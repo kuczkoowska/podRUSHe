@@ -6,6 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
+  usersRepository: any;
   constructor(private readonly usersService: UsersService) { }
 
   @ApiBearerAuth()
@@ -36,6 +37,7 @@ export class UsersController {
     return this.usersService.update(+req.user.userId, updateUserDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete user profile' })
   @Delete()

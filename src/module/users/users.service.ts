@@ -53,7 +53,7 @@ export class UsersService {
   async findByUsername(username: string): Promise<User | undefined> {
     return this.usersRepository.findOne({
       where: { username },
-      select: ['id', 'username', 'password', 'email', 'firstName', 'lastName'],
+      select: ['id', 'username', 'password', 'email', 'firstName', 'lastName', 'role'],
     });
   }
 }

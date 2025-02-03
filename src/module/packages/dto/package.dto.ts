@@ -3,10 +3,6 @@ import { IsString, IsNumber, IsDate, IsOptional, IsArray, Max, MaxLength } from 
 
 export class PackageDto {
   @ApiProperty()
-  @IsNumber()
-  id: number;
-
-  @ApiProperty()
   @IsString()
   @MaxLength(50)
   title: string;
