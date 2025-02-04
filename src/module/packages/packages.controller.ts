@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards, Patch } from '@nestjs/common';
 import { PackagesService } from './packages.service';
 import { Package } from './package.entity';
 import { PackageDto } from './dto/package.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { PackageUpdateDto } from './dto/update-package.dto';
 import { FilterPackageDto } from './dto/filter-package.dto';
 
@@ -32,8 +32,11 @@ export class PackagesController {
   @ApiOperation({ summary: 'Update package' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
-  @Put()
+  @ApiBody({ type: PackageUpdateDto })
+  @Patch(':id')
   update(@Param('id') id: number, @Body() packageData: Partial<PackageUpdateDto>): Promise<Package> {
+    console.log(id)
+    console.log(packageData)
     return this.packagesService.update(+id, packageData);
   }
 

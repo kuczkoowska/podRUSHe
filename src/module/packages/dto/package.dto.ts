@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsDate, IsOptional, IsArray, Max, MaxLength } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsArray, MaxLength } from 'class-validator';
 
 export class PackageDto {
   @ApiProperty()

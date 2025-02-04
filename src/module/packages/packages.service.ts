@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Package } from './package.entity';
 import { FilterPackageDto } from './dto/filter-package.dto';
+import { PackageUpdateDto } from './dto/update-package.dto';
 
 @Injectable()
 export class PackagesService {
@@ -31,7 +32,7 @@ export class PackagesService {
     return packageItem;
   }
 
-  async update(id: number, packageData: Partial<Package>): Promise<Package> {
+  async update(id: number, packageData: Partial<PackageUpdateDto>): Promise<Package> {
     await this.packagesRepository.update(id, packageData);
     return this.packagesRepository.findOne({ where: { id } });
   }

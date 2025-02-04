@@ -4,6 +4,7 @@ import { Booking } from "./booking.entity";
 import { Repository } from "typeorm";
 import { User } from "../users/user.entity";
 import { Package } from "../packages/package.entity";
+import { BookingUpdateDto } from "./dto/update-booking.dto";
 
 @Injectable()
 export class BookingsService {
@@ -77,9 +78,13 @@ export class BookingsService {
     await this.bookingsRepository.delete(id);
   }
   
-  async updateBooking(id: number, updates: { numberOfTravelers?: number; bookingDate?: Date }): Promise<Booking> {
-    const booking = await this.bookingsRepository.findOne({ where: { id }, relations: ['package'] });
+  async updateBooking(id: number, updates: Partial<BookingUpdateDto>, userId: number): Promise<Booking> {
+    const booking = await this.bookingsRepository.findOne({
+      where: { id, user: { id: userId } },
+      relations: ['package'],
+    });
 
+    console.log(booking);
     if (!booking) {
       throw new NotFoundException('Booking not found');
     }
@@ -91,10 +96,6 @@ export class BookingsService {
     if (updates.numberOfTravelers && updates.numberOfTravelers > 0) {
       booking.numberOfTravelers = updates.numberOfTravelers;
       booking.totalPrice = booking.package.price * updates.numberOfTravelers;
-    }
-
-    if (updates.bookingDate) {
-      booking.bookingDate = updates.bookingDate;
     }
 
     return this.bookingsRepository.save(booking);
