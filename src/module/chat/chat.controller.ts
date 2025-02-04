@@ -1,7 +1,6 @@
 import { Controller, Get, Param, UseGuards, Request, Post, Body } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CreateChatMessageDto } from './create-chat.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiBearerAuth()
@@ -10,22 +9,21 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get(':adminId')
-  getChat(@Request() req, @Param('adminId') adminId: string) {
-  return this.chatService.getChatHistory(req.user.id, Number(adminId));
+  @Get()
+  getChat(@Request() req) {
+    return this.chatService.getMessages(req.user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('send')
-    async sendMessage(@Body() createChatMessageDto: CreateChatMessageDto) {
-    return this.chatService.saveMessage(
-        createChatMessageDto.senderId,
-        createChatMessageDto.receiverId,
-        createChatMessageDto.content,
-    );
-    }
+  async sendMessage(@Request() req, @Body() dto: { receiverId: number; content: string }) {
+    const senderId = req.user.id;
+    const receiverId = dto.receiverId === 9 ? 9 : dto.receiverId;
+    return this.chatService.sendMessage(senderId, receiverId, dto.content);
+  }
 
-    @Get('messages/:userId')
-    async getMessages(@Param('userId') userId: string) {
+  @Get('messages/:userId')
+  async getMessages(@Param('userId') userId: string) {
     return this.chatService.getMessages(Number(userId));
-    }
+  }
 }
