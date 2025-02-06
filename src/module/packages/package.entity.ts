@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Comment } from '../comments/comment.entity';
+import { Booking } from '../bookings/booking.entity';
 
 @Entity()
 export class Package {
@@ -33,6 +34,9 @@ export class Package {
   @Column("simple-array", { nullable: true })
   excluded: string[];
   
+  @OneToMany(() => Booking, (booking) => booking.package)
+  bookings: Booking[];
+
   @OneToMany(() => Comment, (comment) => comment.package)
   comments: Comment[];
 }

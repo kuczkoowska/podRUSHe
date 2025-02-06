@@ -45,7 +45,7 @@ export class BookingsController {
   }
 
   @ApiOperation({ summary: 'Cancel a booking for the current user' })
-  @Delete('')
+  @Delete(':id')
   cancelMyBooking(
     @Request() req,
     @Param('id') id: number
