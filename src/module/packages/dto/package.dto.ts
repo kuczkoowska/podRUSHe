@@ -1,20 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsOptional, IsArray, MaxLength } from 'class-validator';
+import { IsString, IsNumber, IsDate, IsOptional, IsArray } from 'class-validator';
 
 export class PackageDto {
   @ApiProperty()
+  @IsNumber()
+  id: number;
+
+  @ApiProperty()
   @IsString()
-  @MaxLength(50)
   title: string;
 
   @ApiProperty()
   @IsString()
-  @MaxLength(200) 
   description: string;
 
   @ApiProperty()
   @IsString()
-  @MaxLength(100)
   destination: string;
 
   @ApiProperty()
@@ -22,9 +23,15 @@ export class PackageDto {
   price: number;
 
   @ApiProperty()
+  @IsString()
+  duration: string;
+
+  @ApiProperty()
+  @IsDate()
   startDate: Date;
 
   @ApiProperty()
+  @IsDate()
   endDate: Date;
 
   @ApiProperty({ required: false })

@@ -2,6 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber, IsOptional, IsArray, MaxLength } from 'class-validator';
 
 export class PackageUpdateDto {
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  title?: string;
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
